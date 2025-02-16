@@ -25,7 +25,7 @@ namespace fe
 {
 
     NPC::NPC(bn::fixed_point pos, bn::camera_ptr& camera, NPC_TYPE type, bn::sprite_text_generator& text_generator) :
-        _pos(pos), _camera(camera), _type(type), _text_generator(text_generator)
+        _type(type), _pos(pos), _camera(camera), _text_generator(text_generator)
     {
         _text_generator.set_bg_priority(0);
         

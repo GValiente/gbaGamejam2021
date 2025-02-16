@@ -12,13 +12,13 @@ namespace fe
     const constexpr int x = -100;
     
     Healthbar::Healthbar() : 
-        _sprites({
+        _sprites{
             bn::sprite_items::healthbar.create_sprite(x, y, 0),
             bn::sprite_items::healthbar.create_sprite(x + inc, y, 1),
             bn::sprite_items::healthbar.create_sprite(x + inc *2, y, 2),
             bn::sprite_items::healthbar.create_sprite(x + inc *3, y, 3),
             bn::sprite_items::healthbar.create_sprite(x + inc *4, y, 12),
-        }),
+        },
         _weapon(WEAPON_TYPE::CLAW),
         _weapon_sprite(bn::sprite_items::weapon_claw.create_sprite(x-6, y,0)),
         _action(bn::create_sprite_animate_action_once(

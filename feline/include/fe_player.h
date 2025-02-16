@@ -23,11 +23,11 @@ namespace fe
     {
         private:
             bn::sprite_ptr _sprite;
-            bn::sprite_ptr _tele_sprite;
             bn::fixed _dx;
             bn::fixed _dy;
             bn::fixed_point _pos;
             bn::optional<bn::camera_ptr> _camera;
+            bn::optional<bn::affine_bg_ptr> _map;
             bn::sprite_ptr _text_bg1;
             bn::sprite_ptr _text_bg2;
             bn::sprite_ptr _skip;
@@ -51,9 +51,9 @@ namespace fe
             bool _can_teleport = false;
 
             Data _data;
+            bn::sprite_ptr _tele_sprite;
 
             bn::optional<bn::span<const bn::affine_bg_map_cell>> _map_cells;
-            bn::optional<bn::affine_bg_ptr> _map;
             bn::optional<bn::vector<Enemy,16>*> _enemies;
 
             fe::Hitbox _hitbox_fall = Hitbox(0,8,8,0);

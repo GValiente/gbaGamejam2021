@@ -27,7 +27,7 @@
 #include "bn_sprite_items_title_start_3.h"
 #include "bn_sprite_items_title_1.h"
 #include "bn_sprite_items_title_2.h"
-#include "bn_regular_bg_items_title.h"
+#include "bn_regular_bg_items_title_regular.h"
 
 #include "bn_music_items.h"
 
@@ -45,7 +45,7 @@ namespace fe
     Scene Title::execute()
     {
         // map
-        bn::regular_bg_ptr map = bn::regular_bg_items::title.create_bg(0, 0);
+        bn::regular_bg_ptr map = bn::regular_bg_items::title_regular.create_bg(0, 0);
 
         bn::fixed_point init_pos = bn::fixed_point(-70, 44);
         bn::music_items::mystic.play();

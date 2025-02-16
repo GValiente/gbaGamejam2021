@@ -16,7 +16,7 @@ namespace fe
 {
 
     Tooltip::Tooltip(bn::fixed_point pos, bn::string_view line, bn::sprite_text_generator& text_generator) :
-        _pos(pos), _line(line), _text_generator(text_generator)
+        _pos(pos), _text_generator(text_generator), _line(line)
     {
         _text_generator.set_left_alignment();
         _text_generator.set_bg_priority(0);

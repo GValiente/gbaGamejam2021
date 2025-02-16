@@ -60,8 +60,6 @@ namespace fe
 
         bn::sprite_text_generator text_generator(variable_8x8_sprite_font);
 
-        int kill_timer = 0;
-
         bn::music_items::mellowdy.play();
         bn::music::set_volume(0.2);
         

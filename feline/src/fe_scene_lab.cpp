@@ -15,6 +15,7 @@
 #include "bn_optional.h"
 #include "bn_span.h"
 #include "bn_affine_bg_map_cell.h"
+#include "bn_unique_ptr.h"
 
 //fe code
 #include "fe_level.h"
@@ -61,7 +62,8 @@ namespace fe
         bn::affine_bg_ptr map = bn::affine_bg_items::lab.create_bg(512, 512);
         bn::regular_bg_ptr bg = bn::regular_bg_items::lab_bg.create_bg(0, 0);
         map.set_priority(1);
-        fe::Level level = fe::Level(map);
+		
+        bn::unique_ptr<fe::Level> level(new fe::Level(map));
 
         bn::sprite_ptr blimp = bn::sprite_items::blimp.create_sprite(60, 330);
         blimp.set_bg_priority(0);
@@ -88,17 +90,17 @@ namespace fe
         // int counter = 1;
 
 
-        bn::vector<Enemy, 16> enemies = {};
-        enemies.push_back(Enemy(173, 424, camera, map, ENEMY_TYPE::RAT, 5));
-        enemies.push_back(Enemy(507, 328, camera, map, ENEMY_TYPE::RAT, 5));
-        enemies.push_back(Enemy(585, 424, camera, map, ENEMY_TYPE::RAT, 5));
-        enemies.push_back(Enemy(523, 176, camera, map, ENEMY_TYPE::RAT, 5));
-        enemies.push_back(Enemy(885, 528, camera, map, ENEMY_TYPE::RAT, 5));
-        enemies.push_back(Enemy(932, 608, camera, map, ENEMY_TYPE::RAT, 5));
-        enemies.push_back(Enemy(874, 768, camera, map, ENEMY_TYPE::RAT, 5));
-        enemies.push_back(Enemy(-1000, -1000, camera, map, ENEMY_TYPE::MUTANT, 5));
+        bn::unique_ptr<bn::vector<Enemy, 16>> enemies(new bn::vector<Enemy, 16>());
+        enemies->push_back(Enemy(173, 424, camera, map, ENEMY_TYPE::RAT, 5));
+        enemies->push_back(Enemy(507, 328, camera, map, ENEMY_TYPE::RAT, 5));
+        enemies->push_back(Enemy(585, 424, camera, map, ENEMY_TYPE::RAT, 5));
+        enemies->push_back(Enemy(523, 176, camera, map, ENEMY_TYPE::RAT, 5));
+        enemies->push_back(Enemy(885, 528, camera, map, ENEMY_TYPE::RAT, 5));
+        enemies->push_back(Enemy(932, 608, camera, map, ENEMY_TYPE::RAT, 5));
+        enemies->push_back(Enemy(874, 768, camera, map, ENEMY_TYPE::RAT, 5));
+        enemies->push_back(Enemy(-1000, -1000, camera, map, ENEMY_TYPE::MUTANT, 5));
 
-        Enemy& mutant = enemies[7];
+        Enemy& mutant = (*enemies)[7];
         // enemies.push_back(Enemy(673, 384, camera, map, ENEMY_TYPE::BOSS, 5));
         // enemies.push_back(Enemy(292, 288, camera, map, ENEMY_TYPE::BOSS, 5));
         // enemies.push_back(Enemy(337, 104, camera, map, ENEMY_TYPE::BOSS, 5));
@@ -108,11 +110,11 @@ namespace fe
         NPC computerstuff = NPC(bn::fixed_point(326, 296), camera, NPC_TYPE::COMPUTER_STUFF, text_generator);
         NPC potion = NPC(bn::fixed_point(481, 494), camera, NPC_TYPE::POTION, text_generator);
         NPC pewpew = NPC(bn::fixed_point(859, 437), camera, NPC_TYPE::PEWPEW, text_generator);
-        NPC mutant_npc = NPC(bn::fixed_point(581, 683), camera, NPC_TYPE::MUTANT, text_generator);
-        Tooltip explain_sneak = Tooltip(bn::fixed_point(143, 400),"Don't let the lab rats see you.", text_generator);
+        bn::unique_ptr<NPC> mutant_npc(new NPC(bn::fixed_point(581, 683), camera, NPC_TYPE::MUTANT, text_generator));
+        bn::unique_ptr<Tooltip> explain_sneak(new Tooltip(bn::fixed_point(143, 400),"Don't let the lab rats see you.", text_generator));
 
         // _player
-        _player->spawn(spawn_location, camera, map, enemies);
+        _player->spawn(spawn_location, camera, map, *enemies);
         _player->set_healthbar_visibility(true);
         _player->set_can_teleport(true);
 
@@ -147,7 +149,7 @@ namespace fe
             // }
             
             if(!detected){
-                for(Enemy& enemy : enemies){
+                for(Enemy& enemy : *enemies){
                     if(bn::abs(enemy.pos().x() - camera.x()) < 400 && bn::abs(enemy.pos().y() - camera.y()) < 200){
                         enemy.update(_player->pos());
                         if(enemy.spotted_player() && !detected){
@@ -160,7 +162,7 @@ namespace fe
                     }
                 }
 
-                _player->update_position(map, level);
+                _player->update_position(map, *level);
                 _player->apply_animation_state();
             }
 
@@ -204,18 +206,18 @@ namespace fe
                 }else if(!pewpew.is_talking()){
                     _player->set_listening(false);
                 }
-            }  else if(mutant_npc.check_trigger(_player->pos()))
+            }  else if(mutant_npc->check_trigger(_player->pos()))
             {
                 if(bn::keypad::up_pressed()){
                     _player->set_listening(true);
-                    mutant_npc.talk();
-                }else if(!mutant_npc.is_talking()){
+                    mutant_npc->talk();
+                }else if(!mutant_npc->is_talking()){
                     _player->set_listening(false);
                 }
             } 
-            else if(explain_sneak.check_trigger(_player->pos())){
+            else if(explain_sneak->check_trigger(_player->pos())){
                 _player->set_listening(true);
-                explain_sneak.update();
+                explain_sneak->update();
             }
             else {
                 _player->set_listening(false);
@@ -228,14 +230,14 @@ namespace fe
             pewpew.update();
             
 
-            if(mutant_npc.finished_talking()){
+            if(mutant_npc->finished_talking()){
                 _player->set_listening(false);
-                if(!mutant_npc.hidden()){
-                    mutant_npc.set_is_hidden(true);
+                if(!mutant_npc->hidden()){
+                    mutant_npc->set_is_hidden(true);
                     mutant.set_pos(bn::fixed_point(581, 683));
                 }
             }else {
-                mutant_npc.update();
+                mutant_npc->update();
             }
 
             if(transparency_action.has_value() && !transparency_action.value().done()){

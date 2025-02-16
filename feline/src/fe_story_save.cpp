@@ -29,7 +29,7 @@ namespace fe
 {
 
     StorySave::StorySave(bn::fixed_point pos, STORY_TYPE type, bn::camera_ptr& camera, bn::sprite_text_generator& text_generator):
-        _pos(pos), _type(type), _camera(camera), _text_generator(text_generator)
+        _type(type), _pos(pos), _camera(camera), _text_generator(text_generator)
     {
         _text_generator.set_bg_priority(0);
         _text_generator.set_one_sprite_per_character(false);
@@ -107,7 +107,6 @@ namespace fe
         _slab.value().set_priority(0);
         _slab.value().set_mosaic_enabled(true);
         int frames = 0;
-        bool is_translated = false;
         _text_generator.set_right_alignment();
         if(_type != STORY_TYPE::CRACKED){
             _text_generator.generate(110,-70, "TAP 'A' to read, 'B' to exit", _text_sprites);
